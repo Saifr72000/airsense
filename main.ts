@@ -2,7 +2,7 @@ let tempDS = 0
 let humDHT = 0
 let tempDHT = 0
 OLED.init(128, 64)
-ESP8266_IoT.connectWifi("Telenor5216sal", "Navneformene2Skrekkelig5")
+ESP8266_IoT.connectWifi("Skywalker Main", "zulfi107")
 ESP8266_IoT.setMQTT(
 ESP8266_IoT.SchemeList.TCP,
 "",
@@ -11,6 +11,7 @@ ESP8266_IoT.SchemeList.TCP,
 ""
 )
 ESP8266_IoT.connectMQTT("10.0.0.3", 1883, true)
+basic.pause(2000)
 basic.forever(function () {
     dht11_dht22.queryData(
     DHTtype.DHT11,
@@ -29,4 +30,5 @@ basic.forever(function () {
     if (ESP8266_IoT.isMqttBrokerConnected()) {
         ESP8266_IoT.publishMqttMessage("{\"temperatureDS\":" + convertToText(tempDS) + "," + "\"humidity\" : " + convertToText(humDHT) + "," + "\"temperatureDHT\": " + convertToText(tempDHT) + "}", "airsense/tempDHT", ESP8266_IoT.QosList.Qos0)
     }
+    basic.pause(5000)
 })
