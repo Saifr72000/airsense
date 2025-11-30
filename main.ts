@@ -1,33 +1,27 @@
-let tempDS = 0
+let co2 = 0
 let humDHT = 0
 let tempDHT = 0
 ESP8266_IoT.initWIFI(SerialPin.P8, SerialPin.P12, BaudRate.BaudRate115200)
 OLED.init(128, 64)
-ESP8266_IoT.connectWifi("Skywalker Main", "zulfi107")
+ESP8266_IoT.connectWifi("Telenor5216sal", "Navneformene2Skrekkelig5")
+basic.pause(2000)
+ESP8266_IoT.setMQTT(
+ESP8266_IoT.SchemeList.TCP,
+"microbit",
+"",
+"",
+""
+)
+ESP8266_IoT.connectMQTT("10.0.0.3", 1883, true)
 basic.pause(2000)
 basic.forever(function () {
-    ESP8266_IoT.setMQTT(
-    ESP8266_IoT.SchemeList.TCP,
-    "microbit",
-    "",
-    "",
-    ""
-    )
-    ESP8266_IoT.connectMQTT("192.168.0.122", 1883, true)
-    dht11_dht22.queryData(
-    DHTtype.DHT11,
-    DigitalPin.P2,
-    true,
-    false,
-    true
-    )
-    tempDHT = dht11_dht22.readData(dataType.temperature)
-    humDHT = dht11_dht22.readData(dataType.humidity)
-    tempDS = Environment.Ds18b20Temp(DigitalPin.P1, Environment.ValType.DS18B20_temperature_C)
+    tempDHT = Environment.dht11value(Environment.DHT11Type.DHT11_temperature_C, DigitalPin.P1)
+    humDHT = Environment.dht11value(Environment.DHT11Type.DHT11_humidity, DigitalPin.P1)
+    co2 = pins.analogReadPin(AnalogReadWritePin.P10)
     OLED.clear()
-    OLED.writeStringNewLine("DS Temp: " + convertToText(tempDS) + " C")
     OLED.writeStringNewLine("DHT Temp: " + convertToText(tempDHT) + " C")
     OLED.writeStringNewLine("DHT Hum: " + convertToText(humDHT) + " %")
+    OLED.writeStringNewLine("Co2: " + convertToText(co2) + " v")
     if (ESP8266_IoT.wifiState(true)) {
         OLED.writeStringNewLine("Wifi Connected")
     } else {
@@ -41,5 +35,5 @@ basic.forever(function () {
     basic.pause(5000)
     ESP8266_IoT.publishMqttMessage(convertToText(tempDHT), "airsense/tempDHT", ESP8266_IoT.QosList.Qos0)
     ESP8266_IoT.publishMqttMessage(convertToText(humDHT), "airsense/humidity", ESP8266_IoT.QosList.Qos0)
-    ESP8266_IoT.publishMqttMessage(convertToText(tempDS), "airsense/tempDS", ESP8266_IoT.QosList.Qos0)
+    ESP8266_IoT.publishMqttMessage(convertToText(co2), "airsense/co2", ESP8266_IoT.QosList.Qos0)
 })
