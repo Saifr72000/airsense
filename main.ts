@@ -3,7 +3,7 @@ let humDHT = 0
 let tempDHT = 0
 ESP8266_IoT.initWIFI(SerialPin.P8, SerialPin.P12, BaudRate.BaudRate115200)
 OLED.init(128, 64)
-ESP8266_IoT.connectWifi("Telenor5216sal", "Navneformene2Skrekkelig5")
+ESP8266_IoT.connectWifi("sr", "microman")
 basic.pause(2000)
 ESP8266_IoT.setMQTT(
 ESP8266_IoT.SchemeList.TCP,
@@ -12,7 +12,7 @@ ESP8266_IoT.SchemeList.TCP,
 "",
 ""
 )
-ESP8266_IoT.connectMQTT("10.0.0.3", 1883, true)
+ESP8266_IoT.connectMQTT("172.20.10.2", 1883, true)
 basic.pause(2000)
 basic.forever(function () {
     tempDHT = Environment.dht11value(Environment.DHT11Type.DHT11_temperature_C, DigitalPin.P1)
